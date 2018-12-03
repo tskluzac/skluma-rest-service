@@ -20,6 +20,7 @@ def submit_file(globus_endpoint, file_path):
     # TODO: 2. Check whether filename exists.
     # TODO: 2. Grab file from Globus and open.
     # TODO: 3. Submit opened file for metadata extraction.
+    print("wow.")
 
 
 
