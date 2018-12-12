@@ -20,6 +20,7 @@ def sqs_producer(file_path, file_id):
     return response
 
 
+# Not needed, but nice to have just in case.
 def sqs_consumer(data):
     queue = sqs_connect()
     for message in queue[0].receive_messages(MessageAttributeNames=['File_To_Process']):

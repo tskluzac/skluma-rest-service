@@ -35,7 +35,6 @@ def submit_file(filename):
 
     # TODO: Note, trying to 'transitively' use Globus auth via forge object from notebook.
 
-    # TODO: 2.  Submit opened file for metadata extraction (QUEUES!).
     # TODO: Deal with duplicate names.
     full_path = hardpath + filename
     submit_response = sqs_queues.sqs_producer(full_path, str(file_uuid))
@@ -46,7 +45,7 @@ def submit_file(filename):
     # TODO: 4. Give callback when it finishes.
 
     # Return response that the job is accepted and the job is started.
-    return Response(json.dumps({'filepath_uuid': str(file_uuid), 'status':202}))
+    return Response(json.dumps({'filepath_uuid': str(file_uuid), 'status': 202}))
 
 
 if __name__ == '__main__':
