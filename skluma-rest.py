@@ -4,6 +4,7 @@ import json
 import uuid
 import sqs_queues
 import sys
+import requests
 
 from flask import Flask, request, jsonify, Response
 from mdf_forge.forge import Forge
@@ -42,7 +43,13 @@ def submit_file(filename):
 
     full_path = hard_path + filename      # TODO: Deal with duplicate names (notebook side)
 
-    submit_response = sqs_queues.sqs_producer(full_path, str(file_uuid))
+    #### CONSTRUCTION ZONE. NEED BLOCKING CALL ####
+    thing = requests.get('http://127.0.0.1:3000/' + full_path).content
+    print(thing)
+
+    ################################################
+
+    # submit_response = sqs_queues.sqs_producer(full_path, str(file_uuid))
 
     # TODO: 3. Save metadata to db. (in Skluma-local-deploy?)
 
