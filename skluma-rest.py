@@ -46,7 +46,7 @@ def submit_file(filename):
     # TODO: 4. Give callback when it finishes.
 
     # Return response that the job is accepted and the job is started.
-    return Response(json.dumps({'filepath_uuid': str(file_uuid)}, status=202, mimetype='application/json'))
+    return Response(json.dumps({'filepath_uuid': str(file_uuid), 'status':202}))
 
 
 if __name__ == '__main__':
