@@ -38,7 +38,7 @@ def submit_file(filename):
     # TODO: 2.  Submit opened file for metadata extraction (QUEUES!).
     # TODO: Deal with duplicate names.
     full_path = hardpath + filename
-    submit_response = sqs_queues.sqs_producer(full_path, file_uuid)
+    submit_response = sqs_queues.sqs_producer(full_path, str(file_uuid))
     print(submit_response)
 
     # TODO: 3. Save metadata to db. (in Skluma-local-deploy?)
@@ -46,7 +46,7 @@ def submit_file(filename):
     # TODO: 4. Give callback when it finishes.
 
     # Return response that the job is accepted and the job is started.
-    return Response(json.dumps({'filepath_uuid': file_uuid}, status=202, mimetype='application/json'))
+    return Response(json.dumps({'filepath_uuid': str(file_uuid)}, status=202, mimetype='application/json'))
 
 
 if __name__ == '__main__':

@@ -5,7 +5,6 @@ import boto3
 def sqs_connect():
     sqs = boto3.resource('sqs', region_name='us-west-2')
     q1 = sqs.get_queue_by_name(QueueName="skluma-universal.fifo")
-    # print("Successfully connected to Skluma Job Queue Service. ")
     return q1, sqs
 
 
