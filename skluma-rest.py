@@ -5,7 +5,6 @@ import sys
 import requests
 
 from flask import Flask, request, jsonify, Response
-from mdf_forge.forge import Forge
 
 
 app = Flask(__name__)
@@ -23,9 +22,9 @@ def hello():
     return "Skluma is working! You've sent an empty request."
 
 
-@app.route('/<file_uuid>', methods=['GET'])
-def get_status(file_uuid):
-    return "Status for file {}:".format(file_uuid)
+@app.route('/<job_uuid>', methods=['GET'])
+def get_job_status(job_uuid):
+    return "Status for file {}:".format(job_uuid)
 
 
 @app.route('/process_file/<filename>', methods=['POST', 'GET'])
@@ -34,24 +33,19 @@ def submit_file(filename):
     # TODO: Move to skluma_cfg file.
     qualified_dns = "http://149.165.156.146"
 
-    file_uuid = uuid.uuid5(uuid.NAMESPACE_DNS, qualified_dns)
+    job_uuid = uuid.uuid5(uuid.NAMESPACE_DNS, qualified_dns)
 
-    # TODO: Note, trying to 'transitively' use Globus auth via forge object from notebook.
 
     full_path = hard_path + filename      # TODO: Deal with duplicate names (notebook side)
-
-    thing = requests.get('http://127.0.0.1:5000/' + filename).content
-    print(thing)
+    final_metadata = requests.get('http://127.0.0.1:5000/' + filename).content
 
     # TODO: 3. Save metadata to db. (in Skluma-local-deploy?)
 
-    # TODO: 4. Give callback when it finishes.
+    # new_metadata = json.loads(thing)
+    # new_metadata['filepath_uuid'] = str(file_uuid)
+    # new_metadata['status'] = 202
 
-    new_metadata = json.loads(thing)
-    new_metadata['filepath_uuid'] = str(file_uuid)
-    new_metadata['status'] = 202
-
-    # Return response that the job is accepted and the job is started.
+    # TODO: Return response that the job is accepted and the job is started.
     return Response(json.dumps(new_metadata))
 
 
