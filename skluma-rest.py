@@ -31,7 +31,7 @@ def get_status(file_uuid):
 
 
 # TODO (TYLER) for Wednesday.
-@app.route('/process_file/<filename>', methods=['POST'])
+@app.route('/process_file/<filename>', methods=['POST', 'GET'])
 def submit_file(filename):
 
     # TODO: Move to skluma_cfg file.
