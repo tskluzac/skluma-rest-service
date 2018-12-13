@@ -1,8 +1,6 @@
 
-import globus_sdk
 import json
 import uuid
-import sqs_queues
 import sys
 import requests
 
@@ -30,7 +28,6 @@ def get_status(file_uuid):
     return "Status for file {}:".format(file_uuid)
 
 
-# TODO (TYLER) for Wednesday.
 @app.route('/process_file/<filename>', methods=['POST', 'GET'])
 def submit_file(filename):
 
@@ -50,8 +47,12 @@ def submit_file(filename):
 
     # TODO: 4. Give callback when it finishes.
 
+    new_metadata = json.loads(thing)
+    new_metadata['filepath_uuid'] = str(file_uuid)
+    new_metadata['status'] = 202
+
     # Return response that the job is accepted and the job is started.
-    return Response(json.dumps({'filepath_uuid': str(file_uuid), 'status': 202}))
+    return Response(json.dumps(new_metadata))
 
 
 if __name__ == '__main__':
