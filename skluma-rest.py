@@ -27,26 +27,19 @@ def get_job_status(job_uuid):
     return "Status for file {}:".format(job_uuid)
 
 
-@app.route('/process_file/<filename>', methods=['POST', 'GET'])
-def submit_file(filename):
+@app.route('/process_file/<job_id>/<task_id>/<deconst_path>', methods=['POST', 'GET'])
+def submit_file(job_id, task_id, deconst_path):
 
-    # TODO: Move to skluma_cfg file.
-    qualified_dns = "http://149.165.156.146"
+    try:
+        # Create file entry in database.
+        init_query = "INSERT INTO sklumadb4 (task_id, job_id, cur_status, subm_time, real_path, req_path) " \
+                     "VALUES ({0}, {1}, {2}, {3}, {4}, {5})".format(str(task_id), str('TRANSFER'), str())
 
-    job_uuid = uuid.uuid5(uuid.NAMESPACE_DNS, qualified_dns)
-
-
-    full_path = hard_path + filename      # TODO: Deal with duplicate names (notebook side)
-    final_metadata = requests.get('http://127.0.0.1:5000/' + filename).content
-
-    # TODO: 3. Save metadata to db. (in Skluma-local-deploy?)
-
-    # new_metadata = json.loads(thing)
-    # new_metadata['filepath_uuid'] = str(file_uuid)
-    # new_metadata['status'] = 202
+    except:
+        return Response({"status": 503})
 
     # TODO: Return response that the job is accepted and the job is started.
-    return Response(json.dumps(new_metadata))
+    return Response({"status": 202})
 
 
 if __name__ == '__main__':
