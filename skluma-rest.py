@@ -45,7 +45,8 @@ def submit_file(job_id, task_id, deconst_path):
     except:
         return Response({"status": 503})
 
-    return Response({"status": 202})
+    return "Bazinga!"
+    # return Response({"status": 202})
 
 
 if __name__ == '__main__':
