@@ -25,7 +25,7 @@ def create_connection(db_file):
     return None
 
 
-def select_all_tasks(conn):
+def select_all_files(conn):
     """
     Query all rows in the tasks table
     :param conn: the Connection object
@@ -39,18 +39,15 @@ def select_all_tasks(conn):
     for row in rows:
         print(row)
 
+
+def insert_into(conn, query_string):
+
+    cur = conn.cursor()
+    cur.execute(query_string)
     conn.commit()
 
 
-def main():
-
-    # create a database connection
-    conn = create_connection(DATABASE)
-    with conn:
-
-        print("2. Query all tasks")
-        select_all_tasks(conn)
+def close_db(conn):
+    conn.close()
 
 
-if __name__ == '__main__':
-    main()

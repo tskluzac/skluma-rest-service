@@ -1,5 +1,6 @@
 
 import datetime
+import db_utils
 import json
 import sqlite3
 import sys
@@ -17,14 +18,6 @@ sys.path.append('../skluma-local-deploy')
 sys.path.append('db_files')
 
 DATABASE = 'sklumadb4.db'
-
-
-
-def get_db():
-    db = getattr(g, '_database', None)
-    if db is None:
-        db = g._database = sqlite3.connect(DATABASE)
-    return db
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -62,6 +55,7 @@ def submit_file():
 
         cur.execute(init_query)
         cur.close()
+        conn.commit
 
     except:
         return Response('BAD')
