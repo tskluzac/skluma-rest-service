@@ -49,5 +49,3 @@ def insert_into(conn, query_string):
 
 def close_db(conn):
     conn.close()
-
-
