@@ -39,6 +39,8 @@ def select_all_tasks(conn):
     for row in rows:
         print(row)
 
+    conn.commit()
+
 
 def main():
 
