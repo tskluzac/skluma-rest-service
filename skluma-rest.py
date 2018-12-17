@@ -17,7 +17,7 @@ hard_path = "/home/tskluzac/Downloads/"
 sys.path.append('../skluma-local-deploy')
 
 
-@app.route('/', methods=['GET'])
+@app.route('/', methods=['GET', 'POST'])
 def hello():
     print("BANANAS!")
     return "Skluma is working! You've sent an empty request."
@@ -28,25 +28,27 @@ def get_job_status(job_uuid):
     return "Status for file {}:".format(job_uuid)
 
 
-@app.route('/process_file/<job_id>/<task_id>/<deconst_path>', methods=['POST', 'GET'])
-def submit_file(job_id, task_id, deconst_path):
+@app.route('/process_file', methods=['POST'])
+def submit_file():
 
-    real_path = deconst_path.replace('?', '/')
-
-    print(real_path)
+    file_data = request.data
+    task_id = file_data["task_id"]
+    job_id = file_data["job_id"]
+    file_path = file_data["filepath"]
+    uniq_path = file_data["uniq_path"]
 
     try:
         # Create file entry in database.
         init_query = "INSERT INTO sklumadb4 (task_id, job_id, cur_status, subm_time, real_path, req_path) " \
-                     "VALUES ({0}, {1}, {2}, {3}, {4}, {5})".format(str(task_id), str(job_id), str('TRANSFER'), str(datetime.datetime.now()), real_path, deconst_path)
+                     "VALUES ({0}, {1}, {2}, {3}, {4}, {5})".format(str(task_id), str(job_id), str('TRANSFER'), str(datetime.datetime.now()), file_path, uniq_path)
 
         print(init_query)
 
     except:
         return Response({"status": 503})
 
-    return "Bazinga!"
-    # return Response({"status": 202})
+    # return "Bazinga!"
+    return Response({"status": 202})
 
 
 if __name__ == '__main__':
