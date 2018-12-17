@@ -31,10 +31,11 @@ def get_job_status(job_uuid):
 @app.route('/process_file', methods=['POST'])
 def submit_file():
 
-    file_data = request.data
+    file_data = json.loads(request.data)
+
     task_id = file_data["task_id"]
     job_id = file_data["job_id"]
-    file_path = file_data["filepath"]
+    file_path = file_data["file_path"]
     uniq_path = file_data["uniq_path"]
 
     try:
@@ -48,7 +49,7 @@ def submit_file():
         return Response({"status": 503})
 
     # return "Bazinga!"
-    return Response({"status": 202})
+    return Response(json.dumps({"status": 202}))
 
 
 if __name__ == '__main__':
