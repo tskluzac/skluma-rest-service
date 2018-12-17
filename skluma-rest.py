@@ -1,11 +1,10 @@
 
-import json
-import uuid
-import sys
 import datetime
-import requests
+import json
+import sqlite3
+import sys
 
-from flask import Flask, request, jsonify, Response
+from flask import Flask, request, Response, g
 
 
 app = Flask(__name__)
@@ -15,6 +14,17 @@ hard_path = "/home/tskluzac/Downloads/"
 
 # How we connect this REST API to Skluma codebase.
 sys.path.append('../skluma-local-deploy')
+sys.path.append('db_files')
+
+DATABASE = 'sklumadb4.db'
+
+
+
+def get_db():
+    db = getattr(g, '_database', None)
+    if db is None:
+        db = g._database = sqlite3.connect(DATABASE)
+    return db
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -38,19 +48,32 @@ def submit_file():
     file_path = file_data["file_path"]
     uniq_path = file_data["uniq_path"]
 
+
+
     try:
+
+        cur = get_db().cursor()
+
         # Create file entry in database.
         init_query = "INSERT INTO sklumadb4 (task_id, job_id, cur_status, subm_time, real_path, req_path) " \
-                     "VALUES ({0}, {1}, {2}, {3}, {4}, {5})".format(str(task_id), str(job_id), str('TRANSFER'), str(datetime.datetime.now()), file_path, uniq_path)
+                     "VALUES ({0}, {1}, {2}, {3}, {4}, {5});".format(str(task_id), str(job_id), str('TRANSFER'), str(datetime.datetime.now()), file_path, uniq_path)
 
         print(init_query)
 
+        cur.execute(init_query)
+        cur.close()
+
     except:
-        return Response({"status": 503})
+        return Response('BAD')
 
-    # return "Bazinga!"
-    return Response(json.dumps({"status": 202}))
+    return Response(json.dumps({"task_id": task_id, "job_id": job_id, "process": "SUBMITTED"}))
 
+
+@app.teardown_appcontext
+def close_connection(exception):
+    db = getattr(g, '_database', None)
+    if db is not None:
+        db.close()
 
 if __name__ == '__main__':
     app.run(debug=True, port=5001)
