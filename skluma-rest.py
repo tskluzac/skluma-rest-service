@@ -2,6 +2,7 @@
 import json
 import uuid
 import sys
+import datetime
 import requests
 
 from flask import Flask, request, jsonify, Response
@@ -30,15 +31,20 @@ def get_job_status(job_uuid):
 @app.route('/process_file/<job_id>/<task_id>/<deconst_path>', methods=['POST', 'GET'])
 def submit_file(job_id, task_id, deconst_path):
 
+    real_path = deconst_path.replace('?', '/')
+
+    print(real_path)
+
     try:
         # Create file entry in database.
         init_query = "INSERT INTO sklumadb4 (task_id, job_id, cur_status, subm_time, real_path, req_path) " \
-                     "VALUES ({0}, {1}, {2}, {3}, {4}, {5})".format(str(task_id), str('TRANSFER'), str())
+                     "VALUES ({0}, {1}, {2}, {3}, {4}, {5})".format(str(task_id), str(job_id), str('TRANSFER'), str(datetime.datetime.now()), real_path, deconst_path)
+
+        print(init_query)
 
     except:
         return Response({"status": 503})
 
-    # TODO: Return response that the job is accepted and the job is started.
     return Response({"status": 202})
 
 
