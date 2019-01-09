@@ -1,0 +1,1 @@
+curl --header "Content-Type: application/json" --request POST --data '{"task_id": "aa", "job_id": "bb", "file_path": "cc", "uniq_path":"dd"}' http://127.0.0.1:5000/process_file

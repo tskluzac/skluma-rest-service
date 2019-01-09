@@ -3,10 +3,21 @@ import sqlite3
 from sqlite3 import Error
 
 import datetime
+import json
 import sys
 
+# How we connect this REST API to Skluma codebase.
 sys.path.append('db_files')
-DATABASE = 'db_files/sklumadb4.db'
+
+# Access user's config file, and get path to Skluma's SQLite DB from it.
+try:
+    with open("skluma_cfg.json") as f:
+        skluma_cfg = json.load(f)
+        DATABASE = skluma_cfg["db_path"]
+        f.close()
+
+except FileNotFoundError as e:
+    print(e)
 
 
 class SklumaDB:
@@ -24,8 +35,8 @@ class SklumaDB:
                 self.connected_bool = True
                 return self.conn
 
-            except Error as e:
-                print(e)
+            except Error as e1:
+                print(e1)
                 return self.conn
 
     def insert_file(self, conn, query_string):
@@ -33,9 +44,16 @@ class SklumaDB:
             try:
                 insert_into(conn, query_string)
 
-            except Error as e:
-                print(e)
+            except Error as e2:
+                print(e2)
 
+    def close_db(self, conn):
+        try:
+            conn.close()
+        except Error as e4:
+            print("WARNING: "  + str(e4))
+            pass
+        return True
 
 
 def select_all_files(conn):
@@ -63,9 +81,9 @@ def insert_into(conn, query_string):
         conn.commit()
         return True
 
-    except Error as e:  # TODO: Find specific error-type.
+    except Error as e3:  # TODO: Find specific error-type.
         print("[ERROR] Failure with DB_UTILS.INSERT_INTO command...")
-        print(e)
+        print(e3)
         return False
 
 

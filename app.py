@@ -1,26 +1,16 @@
 
 import db_utils
 import json
-import sys
 
 from flask import Flask, request, Response, g
 
-
 app = Flask(__name__)
-
-# TODO: Move to skluma_cfg file.
-hard_path = "/home/tskluzac/Downloads/"
-
-# How we connect this REST API to Skluma codebase.
-sys.path.append('db_files')
-
-DATABASE = 'db_files/sklumadb4.db'
 
 
 @app.route('/', methods=['GET', 'POST'])
-def hello():
-    print("BANANAS!")
-    return "Skluma is working! You've sent an empty request."
+def test_connectivity():
+    print("[DEBUG] Skluma is running! Empty Request.")
+    return "Skluma running! Your request is empty..."
 
 
 @app.route('/<job_uuid>', methods=['GET'])
@@ -43,16 +33,15 @@ def submit_file():
     # Get instance of SklumaDB class, connect to DB, and insert metadata.
     skluma_db = db_utils.SklumaDB()
     skluma_conn = skluma_db.connect_to_db()
-    insert_success = skluma_db.insert_file(skluma_conn, db_utils.make_insert_string(task_id, job_id, file_path, uniq_path))
-
-    if not insert_success:
-        raise LookupError("[ERROR] Unable to add file.")
+    skluma_db.insert_file(skluma_conn, db_utils.make_insert_string(task_id, job_id, file_path, uniq_path))
 
     return Response(json.dumps({"task_id": task_id, "job_id": job_id, "process": "SUBMITTED"}))
 
 
 @app.teardown_appcontext
 def close_connection(exception):
+
+    # TODO: Walk through and understand this context. 
     db = getattr(g, '_database', None)
     if db is not None:
         db.close()
