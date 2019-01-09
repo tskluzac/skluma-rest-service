@@ -2,12 +2,39 @@
 import sqlite3
 from sqlite3 import Error
 
+import datetime
 import sys
 
-
 sys.path.append('db_files')
-
 DATABASE = 'sklumadb4.db'
+
+
+class SklumaDB:
+    def __init__(self, db_name):
+        self.connected_bool = False
+        self.conn = None
+
+        self.db_name = db_name
+
+    def connect_to_db(self, db_name):
+
+        if not self.connected_bool:
+            try:
+                self.conn = sqlite3.connect(db_name)
+                self.connected_bool = True
+                return self.conn
+
+            except Error as e:
+                print(e)
+                return self.conn
+
+    def insert_file(self, query_string):
+        if self.conn is not None:
+            try:
+                insert_into(self.conn, query_string)
+
+            except:
+                print(" [DEBUG] PUT DB ERROR HERE. ")
 
 
 def create_connection(db_file):
@@ -47,5 +74,24 @@ def insert_into(conn, query_string):
     conn.commit()
 
 
+def db_str(in_string):
+    return "'" + str(in_string) + "'"
+
+
 def close_db(conn):
     conn.close()
+
+
+def make_insert_string(task_id, job_id, file_path, uniq_path):
+    init_query = "INSERT INTO files (task_id, job_id, cur_status, subtime, real_path, req_path) " \
+                 "VALUES ({0}, {1}, {2}, {3}, {4}, {5});".format(db_str(task_id), db_str(job_id), db_str('TRANSFER'),
+                                                                 db_str(datetime.datetime.now()), db_str(file_path),
+                                                                 db_str(uniq_path))
+    return init_query
+
+
+conn = create_connection("db_files/" + DATABASE)
+select_all_files(conn)  # This just prints shit. 
+
+insert_into(conn, make_insert_string("uno", "dos", "tres", "quatro"))
+

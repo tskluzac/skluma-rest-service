@@ -21,36 +21,6 @@ sys.path.append('db_files')
 DATABASE = 'sklumadb4.db'
 
 
-class SklumaDB:
-    def __init__(self, db_name):
-        self.connected_bool = False
-        self.conn = None
-
-        self.db_name = db_name
-
-    def connect_to_db(self, db_name):
-
-        if not self.connected_bool:
-            try:
-                self.conn = sqlite3.connect(db_name)
-                self.connected_bool = True
-                return self.conn
-
-            except Error as e:
-                print(e)
-                return self.conn
-
-    def insert_file(self, query_string):
-        if self.conn is not None:
-            try:
-                db_utils.insert_into(self.conn, query_string)
-
-            except:
-                print(" [DEBUG] PUT DB ERROR HERE. ")
-
-
-
-
 @app.route('/', methods=['GET', 'POST'])
 def hello():
     print("BANANAS!")
@@ -65,7 +35,7 @@ def get_job_status(job_uuid):
 @app.route('/process_file', methods=['POST'])
 def submit_file():
 
-    skluma_db = SklumaDB(DATABASE)
+    skluma_db = db_utils.SklumaDB(DATABASE)
 
     file_data = json.loads(request.data)
 
