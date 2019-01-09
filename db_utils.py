@@ -91,7 +91,7 @@ def make_insert_string(task_id, job_id, file_path, uniq_path):
 
 
 conn = create_connection("db_files/" + DATABASE)
-select_all_files(conn)  # This just prints shit. 
+select_all_files(conn)  # This just prints shit.
 
 insert_into(conn, make_insert_string("uno", "dos", "tres", "quatro"))
 
