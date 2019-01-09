@@ -41,7 +41,7 @@ def submit_file():
 @app.teardown_appcontext
 def close_connection(exception):
 
-    # TODO: Walk through and understand this context. 
+    # TODO: Walk through and understand this context.
     db = getattr(g, '_database', None)
     if db is not None:
         db.close()
