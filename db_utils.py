@@ -69,9 +69,15 @@ def select_all_files(conn):
 
 def insert_into(conn, query_string):
 
-    cur = conn.cursor()
-    cur.execute(query_string)
-    conn.commit()
+    try:
+        cur = conn.cursor()
+        cur.execute(query_string)
+        conn.commit()
+        return True
+
+    except:  # TODO: Find specific error-type.
+        print("[ERROR] Failure with DB_UTILS.INSERT_INTO command...")
+        return False
 
 
 def db_str(in_string):
@@ -88,10 +94,3 @@ def make_insert_string(task_id, job_id, file_path, uniq_path):
                                                                  db_str(datetime.datetime.now()), db_str(file_path),
                                                                  db_str(uniq_path))
     return init_query
-
-
-conn = create_connection("db_files/" + DATABASE)
-select_all_files(conn)  # This just prints shit.
-
-insert_into(conn, make_insert_string("uno", "dos", "tres", "quatro"))
-
